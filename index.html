@@ -33,20 +33,26 @@
         
         .class-info { display: none; background: #ffffff; padding: 12px; font-size: 0.85em; border-top: 1px solid #edf2f7; color: #4a5568; }
         
-        /* CẤU TRÚC CHIA 5 DÒNG CỦA CA HỌC */
-        .shift-block { padding: 12px 0; border-bottom: 3px dashed #e2e8f0; }
+        .shift-block { padding: 12px 0; border-bottom: 3px dashed #e2e8f0; position: relative; }
         .shift-block:last-child { border-bottom: none; }
         
-        .info-row-ca { margin-bottom: 8px; }
+        .info-row-ca { margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center; }
         .info-row-lop { font-size: 1.15em; color: #2b6cb0; font-weight: bold; margin-bottom: 6px; }
         .info-row-gv { font-size: 0.95em; color: #2d3748; margin-bottom: 4px; }
         .info-row-sdt { font-size: 0.95em; color: #718096; margin-bottom: 12px; }
         .info-row-ds { width: 100%; }
 
         .shift-time { display: inline-block; background: #ebf8ff; color: #2b6cb0; padding: 4px 10px; border-radius: 4px; font-weight: bold; font-size: 0.95em; }
+        
+        /* NÚT COPY RIÊNG CHO TỪNG CA */
+        .btn-shift-copy {
+            background-color: #2ecc71; color: white; border: none; padding: 5px 10px;
+            font-size: 0.8em; font-weight: bold; border-radius: 5px; cursor: pointer;
+        }
+        .btn-shift-copy:active { background-color: #27ae60; }
+
         .no-class { color: #a0aec0; font-style: italic; display: block; padding: 5px 0; }
         
-        /* BẢNG ĐIỂM DANH HỌC SINH 3 DÒNG */
         .student-table { width: 100%; border-collapse: collapse; font-size: 0.95em; margin-top: 5px; }
         .student-table th { background: #f7fafc; color: #718096; text-align: left; padding: 6px 4px; font-size: 0.8em; border-bottom: 1px solid #e2e8f0; text-transform: uppercase; }
         .student-table td { padding: 10px 4px; border-bottom: 1px solid #edf2f7; vertical-align: top; }
@@ -58,7 +64,6 @@
         .line-2 { margin-bottom: 8px; display: flex; gap: 8px; }
         .line-3 { display: flex; gap: 6px; }
         
-        /* Vùng hiển thị SĐT Phụ huynh dưới ô ghi chú */
         .parent-phone-box { margin-top: 6px; font-size: 0.85em; color: #4a5568; background: #f7fafc; padding: 4px 6px; border-radius: 4px; border-left: 3px solid #cbd5e0; display: inline-block; width: 100%; }
         .parent-phone-box a { color: #2b6cb0; text-decoration: none; font-weight: bold; }
 
@@ -85,42 +90,19 @@
     <div class="grid-container" id="main-grid"></div>
 
     <script>
-        // =================================================================
-        // VÙNG 1: TỔNG KHO DỮ LIỆU HỌC SINH (ĐÃ THÊM SĐT PHỤ HUYNH)
-        // =================================================================
+        // ================= KHO DỮ LIỆU MẪU =================
         const DATA_HOC_SINH_GOC = {
             "hs1": { name: "Nguyễn Văn Anh", phonePH: "0912.111.222" },
             "hs2": { name: "Trần Thị Bình", phonePH: "0912.333.444" },
-            "hs3": { name: "Lê Hoàng Chiến", phonePH: "0912.555.666" },
-            "hs4": { name: "Phạm Minh Đức", phonePH: "0912.777.888" },
-            "hs5": { name: "Hoàng Thu Giang", phonePH: "0912.999.000" }
+            "hs3": { name: "Lê Hoàng Chiến", phonePH: "0912.555.666" }
         };
 
         const DANH_SACH_LOP_HOC = {
-            "Sun": ["hs1", "hs2", "hs3"], 
-            "Star": ["hs4", "hs5"]
+            "Sun": ["hs1", "hs2", "hs3"]
         };
 
         const dataThoikhoabieu = {
-
-        
-                "2_30_1_1": { tenLop: "Sun", gv: "Thầy Hùng T2", sdt: "0901.234.567" },
-                "2_58_3_2": { tenLop: "Star", gv: "Cô Linh T2", sdt: "0909.888.999" },
-                "3_30_2_1": { tenLop: "Sun", gv: "Thầy Hùng T3", sdt: "0901.234.567" },
-                "3_158_1_3": { tenLop: "Star", gv: "Cô Mai T3", sdt: "0911.222.333" },
-                "4_58_1_2": { tenLop: "Sun", gv: "Cô Lan T4", sdt: "0988.777.666" },
-                "4_237_4_1": { tenLop: "Star", gv: "Thầy Nam T4", sdt: "0977.666.555" },
-                "5_30_3_3": { tenLop: "Sun", gv: "Thầy Hùng T5", sdt: "0901.234.567" },
-                "5_158_2_2": { tenLop: "Star", gv: "Cô Mai T5", sdt: "0911.222.333" },
-                "6_58_2_1": { tenLop: "Sun", gv: "Cô Lan T6", sdt: "0988.777.666" },
-                "6_237_1_2": { tenLop: "Star", gv: "Thầy Tuấn T6", sdt: "0966.555.444" },
-                "7_30_1_2": { tenLop: "Star", gv: "Cô Linh T7", sdt: "0909.888.999" },
-                "7_158_4_1": { tenLop: "Sun", gv: "Thầy Bách T7", sdt: "0944.333.222" },
-                "8_58_3_1": { tenLop: "Sun", gv: "Thầy Bách CN", sdt: "0944.333.222" },
-                "8_237_7_3": { tenLop: "Star", gv: "Thầy Nam CN", sdt: "0977.666.555" }
-            
-
-        
+            "2_30_1_1": { tenLop: "Sun", gv: "Thầy Hùng", sdt: "0901.234.567" }
         };
 
         const configData = [
@@ -165,7 +147,7 @@
                 <table class="student-table">
                     <thead>
                         <tr>
-                            <th style="width: 55%;">Học sinh (3 dòng)</th>
+                            <th style="width: 55%;">Học sinh</th>
                             <th style="width: 45%;">Ghi chú & Liên hệ</th>
                         </tr>
                     </thead>
@@ -173,16 +155,17 @@
             `;
 
             const studentIds = DANH_SACH_LOP_HOC[classData.tenLop] || [];
-            studentIds.forEach((hsId) => {
+            studentIds.forEach((hsId, index) => {
                 const studentInfo = DATA_HOC_SINH_GOC[hsId];
                 if (studentInfo) {
                     const uniqueStorageKey = `${key}_${hsId}`;
                     const phPhone = studentInfo.phonePH || "Chưa cập nhật";
+                    const stt = index + 1; // Tạo số thứ tự từ 1
 
                     studentTableHTML += `
-                        <tr class="student-row" data-storagekey="${uniqueStorageKey}">
+                        <tr class="student-row" data-storagekey="${uniqueStorageKey}" data-stt="${stt}" data-name="${studentInfo.name}">
                             <td>
-                                <div class="line-1">${studentInfo.name}</div>
+                                <div class="line-1">${stt}. ${studentInfo.name}</div>
                                 <div class="line-2">
                                     <span class="btn-check btn-cp" onclick="toggleAttendance(this, 'cp')">✓</span>
                                     <span class="btn-check btn-kp" onclick="toggleAttendance(this, 'kp')">X</span>
@@ -205,13 +188,16 @@
             studentTableHTML += `</tbody></table>`;
 
             return `
-                <div class="shift-block">
-                    <div class="info-row-ca"><span class="shift-time">${shiftText}</span></div>
+                <div class="shift-block" id="block-${key}" data-key="${key}" data-shift="${shiftText}" data-lop="${classData.tenLop}" data-gv="${classData.gv}">
+                    <div class="info-row-ca">
+                        <span class="shift-time">${shiftText}</span>
+                        <button class="btn-shift-copy" onclick="copySingleShiftReport('${key}')">📋 Copy báo cáo</button>
+                    </div>
                     <div class="info-row-lop">🏫 Lớp: ${classData.tenLop}</div>
                     <div class="info-row-gv">👨‍🏫 <strong>Giáo viên:</strong> ${classData.gv}</div>
                     <div class="info-row-sdt">📞 <strong>Số điện thoại:</strong> ${classData.sdt}</div>
                     <div class="info-row-ds">
-                        <div style="font-weight:bold; margin-bottom:6px; color:#2c3e50; font-size:0.95em;">👥 Danh sách học sinh lớp ${classData.tenLop}:</div>
+                        <div style="font-weight:bold; margin-bottom:6px; color:#2c3e50; font-size:0.95em;">👥 Danh sách học sinh:</div>
                         ${studentTableHTML}
                     </div>
                 </div>
@@ -247,9 +233,9 @@
                                 🏢 Tầng ${f} <span>▸</span>
                             </button>
                             <div class="class-info" id="info-${dayIdx}-${house.id}-${f}">
-                                ${generateShiftHTML(dayNum, house.id, f, 1, "⏰ Ca 18h00")}
-                                ${generateShiftHTML(dayNum, house.id, f, 2, "⏰ Ca 18h45")}
-                                ${generateShiftHTML(dayNum, house.id, f, 3, "⏰ Ca 20h00")}
+                                ${generateShiftHTML(dayNum, house.id, f, 1, "Ca 18h00")}
+                                ${generateShiftHTML(dayNum, house.id, f, 2, "Ca 18h45")}
+                                ${generateShiftHTML(dayNum, house.id, f, 3, "Ca 20h00")}
                             </div>
                         </div>
                     `;
@@ -359,6 +345,66 @@
                 noteInput.value = "Đã xin nghỉ dài ngày";
                 saveAttendanceState(row, "cp", noteInput.value);
             }
+        }
+
+        // ================= CHỨC NĂNG SAO CHÉP CHI TIẾT THEO TỪNG CA HỌC =================
+        function copySingleShiftReport(shiftKey) {
+            const block = document.getElementById(`block-${shiftKey}`);
+            if (!block) return;
+
+            const shiftTime = block.getAttribute('data-shift');
+            const tenLop = block.getAttribute('data-lop');
+            const gv = block.getAttribute('data-gv');
+
+            const rows = block.querySelectorAll('.student-row');
+            const totalStudents = rows.length;
+            let absentCount = 0;
+            let absentListText = "";
+
+            rows.forEach(row => {
+                const sKey = row.getAttribute('data-storagekey');
+                const savedData = localStorage.getItem(sKey);
+                const stt = row.getAttribute('data-stt');
+                const name = row.getAttribute('data-name');
+
+                if (savedData) {
+                    const parsed = JSON.parse(savedData);
+                    if (parsed.status === 'cp' || parsed.status === 'kp') {
+                        absentCount++;
+                        const statusLabel = (parsed.status === 'cp') ? "Có phép" : "Không phép";
+                        const note = parsed.note ? ` (${parsed.note})` : "";
+                        absentListText += `${stt}. ${name} - Vắng: ${statusLabel}${note}\n`;
+                    }
+                }
+            });
+
+            // Tính sĩ số động: Tổng số - số học sinh vắng
+            const currentAttendance = totalStudents - absentCount;
+
+           // Xây dựng chuỗi nội dung copy
+            let reportText = `📋 BÁO CÁO CHI TIẾT CA HỌC\n`;
+            reportText += `⏰ Ca học: ${shiftTime}\n`;
+            reportText += `🏫 Lớp: ${tenLop}\n`;
+            reportText += `👨‍🏫 Giáo viên: ${gv}\n`;
+            reportText += `👥 Sĩ số: ${currentAttendance}/${totalStudents}\n`;
+            reportText += `-----------------------------\n`;
+            reportText += `❌ DANH SÁCH HỌC SINH VẮNG:\n`;
+            
+            if (absentCount === 0) {
+                reportText += `🎉 Không có học sinh vắng (Đi học đầy đủ).\n`;
+            } else {
+                reportText += absentListText;
+            }
+
+            // Tiến hành copy vào Clipboard
+            const tempTextarea = document.createElement('textarea');
+            tempTextarea.value = reportText;
+            document.body.appendChild(tempTextarea);
+            tempTextarea.select();
+            document.execCommand('copy');
+            document.body.removeChild(tempTextarea);
+
+            alert(`✅ Đã copy báo cáo ca ${shiftTime} (Lớp ${tenLop}) thành công!`);
         }
 
         loadDataFromStorage();
