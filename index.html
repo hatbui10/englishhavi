@@ -89,6 +89,11 @@
         .input-note { width: 100%; padding: 8px; border: 1px solid #cbd5e0; border-radius: 4px; font-size: 0.9em; color: #4a5568; min-height: 40px; resize: none; }
         .active-grid { display: grid !important; }
         .active-block { display: block !important; }
+
+        /* Màu cho trợ giảng */
+.card-assistant { border-top: 4px solid #e67e22 !important; }
+        
+    
     </style>
 </head>
 <body>
@@ -113,6 +118,25 @@
             </div>
         </div>
 
+        <!-- Khối Trợ Giảng -->
+<div class="card-A card-assistant">
+    <div class="title-A" id="btn-toggle-assistant" style="border-top-color: #e67e22;">👩‍ assistants Trợ Giảng <span>▼</span></div>
+    <div class="teacher-info-box" id="assistant-box">
+        <table class="teacher-table">
+            <thead>
+                <tr>
+                    <th>Họ và Tên</th>
+                    <th>Ngày Sinh</th>
+                    <th>Số Điện Thoại</th>
+                </tr>
+            </thead>
+            <tbody id="assistant-list-data">
+            </tbody>
+        </table>
+    </div>
+</div>
+        
+
     </div>
 
     <script>
@@ -121,6 +145,15 @@
             { name: "Thầy Hùng", dob: "15/08/1992", phone: "0901.234.567" },
             { name: "Cô Linh", dob: "22/11/1995", phone: "0909.888.999" }
         ];
+
+        // ================= KHO DỮ LIỆU TRỢ GIẢNG =================
+const DATA_TRO_GIANG = [
+    { name: "Bạn Minh", dob: "05/02/2003", phone: "0912.345.678" },
+    { name: "Bạn Lan", dob: "12/09/2004", phone: "0987.654.321" }
+];
+
+
+        
 
         // ================= KHO DỮ LIỆU MẪU HỌC SINH & LỚP =================
         const DATA_HOC_SINH_GOC = {
@@ -158,6 +191,24 @@
                 </tr>
             `;
         });
+
+        // Render dữ liệu trợ giảng
+const tbodyAssistant = document.getElementById('assistant-list-data');
+DATA_TRO_GIANG.forEach(tg => {
+    tbodyAssistant.innerHTML += `
+        <tr>
+            <td><strong>${tg.name}</strong></td>
+            <td>${tg.dob}</td>
+            <td><a href="tel:${tg.phone.replace(/\./g, '')}">${tg.phone}</a></td>
+        </tr>
+    `;
+});
+
+// Tải hiệu ứng đóng/mở riêng cho ô Trợ Giảng
+document.getElementById('btn-toggle-assistant').addEventListener('click', function() {
+    const box = document.getElementById('assistant-box');
+    box.style.display = (box.style.display === "block") ? "none" : "block";
+});
 
         function checkHasClass(dayNum, houseId, floorNum = null) {
             if (floorNum !== null) {
