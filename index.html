@@ -1,19 +1,9 @@
-📂 Mở File
-🔄 Reset
-↩ Undo
-↪ Redo
-⌨️ Phím nhanh
-HTML
-CSS
-JS
-💾 LƯU FILE
-CHẠY ▶
 <!DOCTYPE html>
 <html lang="vi">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Danh Sách Giáo Viên</title>
+    <title>Quản Lý Nhân Sự Giảng Dạy</title>
     <style>
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -34,12 +24,58 @@ CHẠY ▶
         h2 {
             text-align: center;
             color: #2c3e50;
-            margin-bottom: 20px;
+            margin-top: 10px;
+            margin-bottom: 25px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
         }
+        
+        /* Thanh điều hướng Tab cực đẹp */
+        .tab-navigation {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #ddd;
+            padding-bottom: 10px;
+        }
+        .tab-btn {
+            padding: 10px 20px;
+            font-size: 1em;
+            font-weight: bold;
+            color: #7f8c8d;
+            background: #eee;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        /* Style khi nút Tab được kích hoạt (Active) */
+        .tab-btn.active[data-tab="giao-vien"] {
+            background-color: #3498db;
+            color: white;
+        }
+        .tab-btn.active[data-tab="tro-giang"] {
+            background-color: #e67e22;
+            color: white;
+        }
+        .tab-btn:hover {
+            opacity: 0.9;
+        }
+
+        /* Ẩn nội dung bảng khi chưa chọn */
+        .tab-content {
+            display: none;
+        }
+        /* Hiển thị bảng khi được thêm class .active */
+        .tab-content.active {
+            display: block;
+        }
+
         table {
             width: 100%;
             border-collapse: collapse;
             margin-top: 10px;
+            margin-bottom: 20px;
         }
         th, td {
             padding: 12px 15px;
@@ -52,10 +88,12 @@ CHẠY ▶
             color: white;
             font-weight: 600;
         }
+        .table-trogiang th {
+            background-color: #e67e22;
+        }
         tr:hover {
             background-color: #f5f5f5;
         }
-        /* Style cho nút gọi điện */
         .btn-call {
             display: inline-block;
             background-color: #2ab7ca;
@@ -77,7 +115,20 @@ CHẠY ▶
             border-radius: 4px;
             font-size: 0.9em;
         }
+        .table-trogiang .badge-lop {
+            background-color: #9b59b6;
+        }
+
         @media screen and (max-width: 600px) {
+            .tab-navigation {
+                flex-direction: row;
+            }
+            .tab-btn {
+                flex: 1;
+                text-align: center;
+                padding: 12px 5px;
+                font-size: 0.9em;
+            }
             table, thead, tbody, th, td, tr {
                 display: block;
             }
@@ -111,83 +162,144 @@ CHẠY ▶
             td:nth-of-type(1):before { content: "Họ và Tên"; }
             td:nth-of-type(2):before { content: "Liên hệ"; }
             td:nth-of-type(3):before { content: "Tên Lớp"; }
-            td:nth-of-type(4):before { content: "Thời Gian Giảng Dạy"; }
+            td:nth-of-type(4):before { content: "Thời Gian Đăng Ký"; }
         }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <h2>DANH SÁCH GIÁO VIÊN</h2>
+    <h2>Danh Sách Quản Lý Nhân Sự</h2>
     
-    <table>
-        <thead>
-            <tr>
-                <th>Họ và Tên</th>
-                <th>Liên hệ</th>
-                <th>Tên Lớp</th>
-                <th>Thời Gian Giảng Dạy</th>
-            </tr>
-        </thead>
-        <tbody id="teacher-table-body">
-            </tbody>
-    </table>
+    <div class="tab-navigation">
+        <button class="tab-btn active" data-tab="giao-vien">👨‍🏫 DANH SÁCH GIÁO VIÊN</button>
+        <button class="tab-btn" data-tab="tro-giang">🧑‍🎓 DANH SÁCH TRỢ GIẢNG</button>
+    </div>
+
+    <div id="giao-vien" class="tab-content active">
+        <table>
+            <thead>
+                <tr>
+                    <th>Họ và Tên</th>
+                    <th>Liên hệ</th>
+                    <th>Tên Lớp</th>
+                    <th>Thời Gian Giảng Dạy</th>
+                </tr>
+            </thead>
+            <tbody id="giao-vien-body">
+                </tbody>
+        </table>
+    </div>
+
+    <div id="tro-giang" class="tab-content">
+        <table class="table-trogiang">
+            <thead>
+                <tr>
+                    <th>Họ và Tên</th>
+                    <th>Liên hệ</th>
+                    <th>Tên Lớp Hỗ Trợ</th>
+                    <th>Thời Gian Trực</th>
+                </tr>
+            </thead>
+            <tbody id="tro-giang-body">
+                </tbody>
+        </table>
+    </div>
 </div>
 
 <script>
-    // Mảng chứa danh sách giáo viên lớp của bạn
+    // 1. MẢNG DỮ LIỆU GIÁO VIÊN
     const danhSachGiaoVien = [
         {
             hoTen: "Nguyễn Văn A",
-            sdtRaw: "0901234567",
-            sdtDisplay: "0901.234.567",
+            sdt: "0901234567",
             lop: "Lớp 10A1",
             thoiGian: "Thứ 2, Thứ 4 (08:00 - 10:00)"
         },
         {
             hoTen: "Trần Thị B",
-            sdtRaw: "0912345678",
-            sdtDisplay: "0912.345.678",
+            sdt: "0912345678",
             lop: "Lớp 11B2",
             thoiGian: "Thứ 3, Thứ 5 (14:00 - 16:00)"
         },
         {
             hoTen: "Lê Hoàng C",
-            sdtRaw: "0983456789",
-            sdtDisplay: "0983.456.789",
+            sdt: "0983456789",
             lop: "Lớp 12C3",
             thoiGian: "Thứ 7 (09:00 - 11:30)"
-        },
-        {
-            hoTen: "Phạm Minh D",
-            sdtRaw: "0977888999",
-            sdtDisplay: "0977.888.999",
-            lop: "Lớp Luyện Thi",
-            thoiGian: "Chủ Nhật (18:00 - 20:00)"
         }
     ];
 
-    // Hàm render mảng dữ liệu ra bảng HTML
-    function renderTable() {
-        const tbody = document.getElementById("teacher-table-body");
-        tbody.innerHTML = ""; // Xóa dữ liệu cũ nếu có
+    // 2. MẢNG DỮ LIỆU TRỢ GIẢNG
+    const danhSachTroGiang = [
+        {
+            hoTen: "Phạm Minh D",
+            sdt: "0977888999",
+            lop: "Lớp 10A1 & 11B2",
+            thoiGian: "Thứ 2, 3, 4, 5 (Theo ca học)"
+        },
+        {
+            hoTen: "Hoàng Thu Thảo",
+            sdt: "0965123456",
+            lop: "Lớp 12C3",
+            thoiGian: "Thứ 7 (08:30 - 12:00)"
+        },
+        {
+            hoTen: "Đặng Đình Khôi",
+            sdt: "0934555666",
+            lop: "Lớp Luyện Thi",
+            thoiGian: "Chủ Nhật (17:30 - 20:30)"
+        }
+    ];
 
-        danhSachGiaoVien.forEach(gv => {
+    // Định dạng SĐT tự động
+    function formatPhone(phoneStr) {
+        if (!phoneStr) return "";
+        return phoneStr.replace(/(\d{4})(\d{3})(\d{3})/, "$1.$2.$3");
+    }
+
+    // Đổ dữ liệu vào bảng
+    function renderTable(dataArray, targetBodyId) {
+        const tbody = document.getElementById(targetBodyId);
+        tbody.innerHTML = ""; 
+
+        dataArray.forEach(item => {
             const tr = document.createElement("tr");
-
             tr.innerHTML = `
-                <td><strong>${gv.hoTen}</strong></td>
-                <td><a href="tel:${gv.sdtRaw}" class="btn-call">📞 Gọi: ${gv.sdtDisplay}</a></td>
-                <td><span class="badge-lop">${gv.lop}</span></td>
-                <td>${gv.thoiGian}</td>
+                <td><strong>${item.hoTen}</strong></td>
+                <td><a href="tel:${item.sdt}" class="btn-call">📞 Gọi: ${formatPhone(item.sdt)}</a></td>
+                <td><span class="badge-lop">${item.lop}</span></td>
+                <td>${item.thoiGian}</td>
             `;
-
             tbody.appendChild(tr);
         });
     }
 
-    // Chạy hàm render khi trang web tải xong
-    window.onload = renderTable;
+    // Logic xử lý bấm chuyển đổi Tab
+    function setupTabSwitching() {
+        const buttons = document.querySelectorAll('.tab-btn');
+        const contents = document.querySelectorAll('.tab-content');
+
+        buttons.forEach(btn => {
+            btn.addEventListener('click', () => {
+                // Xóa trạng thái active của tất cả các nút và nội dung bảng cũ
+                buttons.forEach(b => b.classList.remove('active'));
+                contents.forEach(c => c.classList.remove('active'));
+
+                // Kích hoạt nút hiện tại và bảng tương ứng dựa trên thuộc tính data-tab
+                btn.classList.add('active');
+                const targetTabId = btn.getAttribute('data-tab');
+                document.getElementById(targetTabId).classList.add('active');
+            });
+        });
+    }
+
+    // Khởi tạo chạy ban đầu
+    window.onload = function() {
+        renderTable(danhSachGiaoVien, "giao-vien-body");
+        renderTable(danhSachTroGiang, "tro-giang-body");
+        setupTabSwitching();
+    };
 </script>
 
 </body>
