@@ -7,43 +7,43 @@
     <style>
         * {
             box-sizing: border-box;
-            -webkit-tap-highlight-color: transparent; /* Tắt khung viền xanh mặc định khi chạm trên điện thoại */
+            -webkit-tap-highlight-color: transparent; /* Tắt viền xanh khi chạm trên điện thoại */
         }
         body {
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
             background-color: #121216; /* Nền tối sâu */
             color: #e2e8f0;
             margin: 0;
-            padding: 12px;
+            padding: 8px; /* Giảm padding viền ngoài */
         }
         .container {
             width: 100%;
-            max-width: 500px; /* Độ rộng tối ưu cho màn hình điện thoại */
+            max-width: 500px;
             margin: 0 auto;
-            background: #1e1e24; /* Nền container tạo khối chiều sâu */
-            padding: 16px;
-            border-radius: 16px;
+            background: #1e1e24;
+            padding: 12px; /* Thu nhỏ padding container */
+            border-radius: 12px;
             box-shadow: 0 8px 24px rgba(0,0,0,0.4);
         }
         h2 {
             text-align: center;
             color: #ffffff;
-            margin: 8px 0 20px 0;
-            font-size: 1.3em;
+            margin: 4px 0 14px 0;
+            font-size: 1.2em;
             text-transform: uppercase;
             letter-spacing: 0.5px;
         }
 
-        /* 📱 THANH TIÊU ĐỀ BẤM ĐỂ ĐÓNG/MỞ (ACCORDION HEADER) */
+        /* 📱 THANH TIÊU ĐỀ ACCORDION BẤM ĐỂ ĐÓNG/MỞ */
         .accordion-header {
             background-color: #262631;
             color: #3498db;
-            padding: 14px 16px;
-            margin-top: 12px;
-            border-radius: 10px;
+            padding: 10px 12px; /* Thu nhỏ thanh tiêu đề */
+            margin-top: 8px;
+            border-radius: 8px;
             cursor: pointer;
             font-weight: bold;
-            font-size: 0.95em;
+            font-size: 0.9em;
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -51,21 +51,10 @@
             border-left: 4px solid #3498db;
             transition: background-color 0.2s;
         }
-        /* Đổi màu sắc thanh bấm cho từng nhóm để dễ phân biệt */
-        .header-chinh {
-            color: #1abc9c;
-            border-left-color: #1abc9c;
-        }
-        .header-phan-nhom {
-            color: #9b59b6;
-            border-left-color: #9b59b6;
-        }
-        .header-tro-giang {
-            color: #e67e22;
-            border-left-color: #e67e22;
-        }
+        .header-chinh { color: #1abc9c; border-left-color: #1abc9c; }
+        .header-phan-nhom { color: #9b59b6; border-left-color: #9b59b6; }
+        .header-tro-giang { color: #e67e22; border-left-color: #e67e22; }
         
-        /* Hiệu ứng mũi tên xoay khi đóng/mở */
         .accordion-icon {
             transition: transform 0.2s ease;
             font-size: 0.8em;
@@ -80,85 +69,113 @@
         /* KHỐI NỘI DUNG ẨN MẶC ĐỊNH */
         .accordion-content {
             display: none;
-            margin-top: 10px;
-            margin-bottom: 14px;
+            margin-top: 6px;
+            margin-bottom: 8px;
         }
-        /* Class kích hoạt hiển thị */
         .accordion-content.open {
             display: block;
         }
 
-        /* 📱 THIẾT KẾ THẺ DANH SÁCH (MOBILE CARDS) */
+        /* 📱 DANH SÁCH DẠNG THẺ TỐI ƯU KHÔNG GIAN DÒNG */
         .card-list {
             display: flex;
             flex-direction: column;
-            gap: 10px;
+            gap: 8px; /* Giảm khoảng cách giữa các thẻ */
         }
         .user-card {
             background: #262631;
-            border-radius: 12px;
-            padding: 14px;
+            border-radius: 10px;
+            padding: 10px; /* Thu nhỏ tối đa padding của thẻ */
             box-shadow: 0 4px 10px rgba(0,0,0,0.15);
             border-left: 3px solid #555566;
         }
-        .card-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-start;
+        .header-chinh + .accordion-content .user-card { border-left-color: #1abc9c; }
+        .header-phan-nhom + .accordion-content .user-card { border-left-color: #9b59b6; }
+        .header-tro-giang + .accordion-content .user-card { border-left-color: #e67e22; }
+
+        /* TÊN GIÁO VIÊN */
+        .card-top-info {
             margin-bottom: 8px;
+            border-bottom: 1px solid #3f3f52;
+            padding-bottom: 4px;
         }
         .user-name {
-            font-size: 1.05em;
+            font-size: 1em;
             font-weight: bold;
             color: #ffffff;
         }
-        .badge-lop {
-            background-color: #27ae60;
-            color: white;
-            padding: 3px 8px;
+
+        /* KHỐI LỚP HỌC */
+        .class-section {
+            margin-bottom: 6px;
+        }
+        .class-section-title {
+            font-size: 0.8em;
+            color: #1abc9c;
+            font-weight: bold;
+            margin-bottom: 4px;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+        .header-phan-nhom + .accordion-content .class-section-title { color: #9b59b6; }
+        .header-tro-giang + .accordion-content .class-section-title { color: #e67e22; }
+
+        /* 🗓️ KHU VỰC HIỂN THỊ LỊCH HỌC TỐI ƯU KHÔNG XUỐNG DÒNG */
+        .session-container {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+        .session-row {
+            background: #1e1e24;
+            padding: 5px 8px; /* Thu hẹp tối đa đệm ô lịch */
             border-radius: 6px;
-            font-size: 0.75em;
-            font-weight: 600;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            font-size: 0.78em; /* Hạ nhẹ cỡ chữ để đảm bảo ôm trọn lịch dài trên cùng 1 dòng */
         }
-        .header-tro-giang + .accordion-content .badge-lop {
-            background-color: #e67e22;
-        }
-        .user-time {
-            font-size: 0.82em;
+        .session-title {
+            font-weight: bold;
             color: #94a3b8;
-            margin-bottom: 12px;
-            line-height: 1.4;
+            min-width: 42px; /* Ép không gian tiêu đề nhỏ lại */
+            white-space: nowrap;
         }
-        
-        /* KHU VỰC NÚT ĐIỀU HƯỚNG LIÊN HỆ */
+        .session-info {
+            flex: 1;
+            text-align: right;
+            color: #e2e8f0;
+            white-space: nowrap; /* Cấm chữ tự động xuống dòng */
+            overflow: hidden;
+            text-overflow: ellipsis; /* Nếu quá dài sẽ hiển thị dấu ... thay vì phá hỏng layout */
+            padding-left: 6px;
+        }
+
+        /* KHU VỰC NÚT LIÊN HỆ */
         .contact-actions {
             display: flex;
-            gap: 8px;
+            gap: 6px;
+            margin-top: 10px;
         }
         .btn-action {
             flex: 1;
             display: inline-flex;
             align-items: center;
             justify-content: center;
-            gap: 6px;
+            gap: 4px;
             color: white;
-            padding: 10px 0;
+            padding: 8px 0; /* Thu nhỏ nút liên hệ */
             text-decoration: none;
-            border-radius: 8px;
+            border-radius: 6px;
             font-weight: bold;
-            font-size: 0.85em;
+            font-size: 0.8em;
             text-align: center;
             transition: opacity 0.2s;
         }
-        .btn-phone {
-            background-color: #1ba3b5;
-        }
-        .btn-zalo {
-            background-color: #0068ff;
-        }
-        .btn-action:active {
-            opacity: 0.7;
-        }
+        .btn-phone { background-color: #1ba3b5; }
+        .btn-zalo { background-color: #0068ff; }
+        .btn-action:active { opacity: 0.7; }
     </style>
 </head>
 <body>
@@ -166,7 +183,7 @@
 <div class="container">
     <h2>Quản Lý Nhân Sự</h2>
     
-    <!-- THANH BẤM 1: GIÁO VIÊN CHÍNH -->
+    <!-- 1. GIÁO VIÊN CHÍNH -->
     <div class="accordion-header header-chinh" onclick="toggleAccordion('gv-chinh-content', this)">
         <span>⭐ GIÁO VIÊN CHÍNH</span>
         <span class="accordion-icon">▼</span>
@@ -175,7 +192,7 @@
         <div id="gv-chinh-cards" class="card-list"></div>
     </div>
 
-    <!-- THANH BẤM 2: PHÂN NHÓM -->
+    <!-- 2. PHÂN NHÓM -->
     <div class="accordion-header header-phan-nhom" onclick="toggleAccordion('gv-phan-nhom-content', this)">
         <span>👥 GIÁO VIÊN PHÂN NHÓM</span>
         <span class="accordion-icon">▼</span>
@@ -184,7 +201,7 @@
         <div id="gv-phan-nhom-cards" class="card-list"></div>
     </div>
 
-    <!-- THANH BẤM 3: TRỢ GIẢNG -->
+    <!-- 3. TRỢ GIẢNG -->
     <div class="accordion-header header-tro-giang" onclick="toggleAccordion('tro-giang-content', this)">
         <span>🧑‍🎓 DANH SÁCH TRỢ GIẢNG</span>
         <span class="accordion-icon">▼</span>
@@ -195,31 +212,33 @@
 </div>
 
 <script>
-    // 1. DỮ LIỆU GIÁO VIÊN CHÍNH
     const danhSachGvChinh = [
-        { hoTen: "Anh Thư", sdt: "0901234567", lop: "Lớp 10A1", thoiGian: "Thứ 2, Thứ 4 (08:00 - 10:00)" },
-        { hoTen: "Phương Thanh", sdt: "0912345678", lop: "Lớp 11B2", thoiGian: "Thứ 3, Thứ 5 (14:00 - 16:00)" },
-        { hoTen: "Quỳnh Anh", sdt: "0912345678", lop: "Lớp 11B2", thoiGian: "Thứ 3, Thứ 5 (14:00 - 16:00)" },
-        { hoTen: "Thanh Mai", sdt: "0912345678", lop: "Lớp 11B2", thoiGian: "Thứ 3, Thứ 5 (14:00 - 16:00)" },
-        { hoTen: "Hưng", sdt: "0983456789", lop: "Lớp 12C3", thoiGian: "Thứ 7 (09:00 - 11:30)" }
+        { 
+            hoTen: "Anh Thư", sdt: "0901234567",
+            lopA: { tenLop: "📖 Lớp 10A1", b1: "T2 (08:00-10:00) - Ca 1", b2: "T4 (08:00-10:00) - Ca 1" },
+            lopB: { tenLop: "📖 Lớp 11B3", b3: "T3 (14:00-16:00) - Ca 3", b4: "T5 (14:00-16:00) - Ca 3" }
+        },
+        { 
+            hoTen: "Phương Thanh", sdt: "0912345678",
+            lopA: { tenLop: "📖 Lớp VIP 1", b1: "Thứ 2 (18:00 - 20:00)", b2: "Thứ 6 (18:00 - 20:00)" },
+            lopB: { tenLop: "📖 Lớp VIP 2", b3: "Thứ 7 (09:00 - 11:00)", b4: "CN (09:00 - 11:00)" }
+        }
     ];
 
-    // 2. DỮ LIỆU GIÁO VIÊN PHÂN NHÓM
     const danhSachGvPhanNhom = [
-        { hoTen: "Hà Linh", sdt: "0912345678", lop: "Phân Nhóm 1", thoiGian: "Thứ 3, Thứ 5 (14:00 - 16:00)" },
-        { hoTen: "Diệp Anh", sdt: "0912345678", lop: "Phân Nhóm 2", thoiGian: "Thứ 3, Thứ 5 (14:00 - 16:00)" },
-        { hoTen: "Mạnh Toàn", sdt: "0912345678", lop: "Phân Nhóm 1", thoiGian: "Thứ 3, Thứ 5 (14:00 - 16:00)" },
-        { hoTen: "Thu Minh", sdt: "0912345678", lop: "Phân Nhóm 3", thoiGian: "Thứ 3, Thứ 5 (14:00 - 16:00)" },
-        { hoTen: "Hà My", sdt: "0912345678", lop: "Phân Nhóm 2", thoiGian: "Thứ 3, Thứ 5 (14:00 - 16:00)" },
-        { hoTen: "Duyên", sdt: "0912345678", lop: "Phân Nhóm 1", thoiGian: "Thứ 3, Thứ 5 (14:00 - 16:00)" },
-        { hoTen: "Bảo Anh", sdt: "0912345678", lop: "Phân Nhóm 3", thoiGian: "Thứ 3, Thứ 5 (14:00 - 16:00)" }
+        { 
+            hoTen: "Hà Linh", sdt: "0912345680",
+            lopA: { tenLop: "👥 Nhóm Toán 1", b1: "Thứ 3 (14:00 - 16:00)", b2: "Thứ 5 (14:00 - 16:00)" },
+            lopB: { tenLop: "👥 Nhóm Toán 2", b3: "Thứ 3 (16:30 - 18:30)", b4: "Thứ 5 (16:30 - 18:30)" }
+        }
     ];
 
-    // 3. DỮ LIỆU TRỢ GIẢNG
     const danhSachTroGiang = [
-        { hoTen: "Phạm Minh D", sdt: "0977888999", lop: "Lớp 10A1 & 11B2", thoiGian: "Thứ 2, 3, 4, 5 (Theo ca học)" },
-        { hoTen: "Hoàng Thu Thảo", sdt: "0965123456", lop: "Lớp 12C3", thoiGian: "Thứ 7 (08:30 - 12:00)" },
-        { hoTen: "Đặng Đình Khôi", sdt: "0934555666", lop: "Lớp Luyện Thi", thoiGian: "Chủ Nhật (17:30 - 20:30)" }
+        { 
+            hoTen: "Phạm Minh D", sdt: "0977888999",
+            lopA: { tenLop: "✏️ Hỗ trợ lớp 10", b1: "Thứ 2 (Ca sáng)", b2: "Thứ 4 (Ca sáng)" },
+            lopB: { tenLop: "✏️ Hỗ trợ lớp 11", b3: "Thứ 3 (Ca chiều)", b4: "Thứ 5 (Ca chiều)" }
+        }
     ];
 
     function getRawPhone(phoneStr) {
@@ -231,7 +250,6 @@
         return phoneStr.replace(/(\d{4})(\d{3})(\d{3})/, "$1.$2.$3");
     }
 
-    // Đổ dữ liệu ra Card List
     function renderCardList(dataArray, targetContainerId) {
         const container = document.getElementById(targetContainerId);
         container.innerHTML = ""; 
@@ -243,11 +261,38 @@
             const card = document.createElement("div");
             card.className = "user-card";
             card.innerHTML = `
-                <div class="card-header">
+                <div class="card-top-info">
                     <div class="user-name">${item.hoTen}</div>
-                    <div class="badge-lop">${item.lop}</div>
                 </div>
-                <div class="user-time">🕒 Lịch: ${item.thoiGian}</div>
+                
+                <div class="class-section">
+                    <div class="class-section-title">${item.lopA.tenLop}</div>
+                    <div class="session-container">
+                        <div class="session-row">
+                            <span class="session-title">B1:</span>
+                            <div class="session-info">${item.lopA.b1}</div>
+                        </div>
+                        <div class="session-row">
+                            <span class="session-title">B2:</span>
+                            <div class="session-info">${item.lopA.b2}</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="class-section">
+                    <div class="class-section-title">${item.lopB.tenLop}</div>
+                    <div class="session-container">
+                        <div class="session-row">
+                            <span class="session-title">B3:</span>
+                            <div class="session-info">${item.lopB.b3}</div>
+                        </div>
+                        <div class="session-row">
+                            <span class="session-title">B4:</span>
+                            <div class="session-info">${item.lopB.b4}</div>
+                        </div>
+                    </div>
+                </div>
+
                 <div class="contact-actions">
                     <a href="tel:${rawPhone}" class="btn-action btn-phone">📞 Gọi: ${displayPhone}</a>
                     <a href="https://zalo.me/${rawPhone}" target="_blank" class="btn-action btn-zalo">💬 Zalo</a>
@@ -257,14 +302,10 @@
         });
     }
 
-    // 🛠️ LOGIC ĐÓNG / MỞ KHỐI THÔNG MINH (TOGGLE ACCORDION)
     function toggleAccordion(contentId, headerElement) {
         const content = document.getElementById(contentId);
-        
-        // Kiểm tra xem tab này hiện tại đang mở không
         const isOpen = content.classList.contains('open');
         
-        // Thêm hoặc xóa class tùy thuộc vào trạng thái bấm (Bấm lần 1 mở, lần 2 đóng)
         if (isOpen) {
             content.classList.remove('open');
             headerElement.classList.remove('active');
