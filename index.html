@@ -1,504 +1,152 @@
-
 <!DOCTYPE html>
 <html lang="vi">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Hệ Thống Điểm Danh - Lớp 10A1</title>
+    <title>Danh Sách Giáo Viên</title>
     <style>
-        /* --- Giao diện Cyberpunk Ultra Dark --- */
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-            font-family: 'Segoe UI', Roboto, sans-serif;
-            -webkit-tap-highlight-color: transparent;
-        }
         body {
-            background-color: #050508;
-            color: #e0e0e6;
-            padding: 30px 3px 20px 3px;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f4f7f6;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
         }
-
-        h2, h3 {
-            text-align: center;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            margin-bottom: 5px;
+        .container {
+            width: 100%;
+            max-width: 1000px;
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
         }
         h2 {
-            color: #00f0ff;
-            text-shadow: 0 0 10px rgba(0, 240, 255, 0.5);
-            font-size: 1.4rem;
-        }
-        h3 {
-            color: #ff007f;
-            text-shadow: 0 0 10px rgba(255, 0, 127, 0.5);
-            font-size: 1.1rem;
-        }
-        .class-stats {
             text-align: center;
-            color: #ffd700;
-            font-size: 0.9rem;
-            margin-bottom: 15px;
-            font-weight: bold;
-        }
-
-        /* --- Panel Chi Tiết Lớp --- */
-        .class-panel {
-            background: #0a0a14;
-            border: 1px solid #00f0ff;
-            border-radius: 6px;
-            padding: 15px 8px;
-            box-shadow: 0 0 15px rgba(0, 240, 255, 0.15);
-        }
-
-        /* --- Khu vực thêm học sinh mới --- */
-        .add-student-box {
-            background: #0d0d1a;
-            border: 1px solid #ffd700;
-            border-radius: 4px;
-            padding: 12px 10px;
-            margin-bottom: 15px;
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-        }
-        .add-student-box input {
-            width: 100%;
-            background: #050508;
-            border: 1px solid #333;
-            color: #fff;
-            padding: 12px 10px;
-            font-size: 0.9rem;
-            border-radius: 4px;
-            outline: none;
-        }
-        .add-student-box input:focus {
-            border-color: #ffd700;
-            box-shadow: 0 0 5px rgba(255, 215, 0, 0.3);
-        }
-        .btn-add {
-            background: #ffd700;
-            color: #000;
-            border: none;
-            padding: 12px;
-            font-weight: bold;
-            font-size: 0.9rem;
-            border-radius: 4px;
-            cursor: pointer;
-            text-transform: uppercase;
-        }
-        .btn-add:active { background: #cca300; }
-
-        /* --- Bảng Danh Sách Vắng --- */
-        .absent-section {
-            background: rgba(255, 0, 127, 0.05);
-            border: 1px dashed #ff007f;
-            border-radius: 4px;
-            padding: 10px;
+            color: #2c3e50;
             margin-bottom: 20px;
         }
-        .absent-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 8px;
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
         }
-        .absent-title {
-            color: #ff007f;
-            font-weight: bold;
-            font-size: 0.9rem;
+        th, td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+            vertical-align: middle;
         }
-        .copy-btn {
-            background: #ff007f;
-            color: #fff;
-            border: none;
+        th {
+            background-color: #3498db;
+            color: white;
+            font-weight: 600;
+        }
+        tr:hover {
+            background-color: #f5f5f5;
+        }
+        /* Style cho nút gọi điện */
+        .btn-call {
+            display: inline-block;
+            background-color: #2ab7ca;
+            color: white;
             padding: 6px 12px;
-            font-size: 0.8rem;
+            text-decoration: none;
+            border-radius: 20px;
             font-weight: bold;
-            border-radius: 3px;
-            cursor: pointer;
-            box-shadow: 0 0 8px #ff007f;
+            font-size: 0.9em;
+            transition: background 0.3s ease;
         }
-        .copy-btn:active { background: #ff55a5; }
-        .absent-list {
-            list-style: none;
-            font-size: 0.9rem;
-            color: #ff55a5;
-            line-height: 1.4;
+        .btn-call:hover {
+            background-color: #1b94a3;
         }
-        .absent-list li {
-            padding: 3px 0;
-            border-bottom: 1px solid rgba(255, 0, 127, 0.1);
-        }
-
-        /* --- Thẻ Học Sinh --- */
-        .student-list {
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-        }
-        .student-card {
-            background: #121224;
-            border: 1px solid #333;
-            border-left: 4px solid #00f0ff;
+        .badge-lop {
+            background-color: #2ecc71;
+            color: white;
+            padding: 4px 8px;
             border-radius: 4px;
-            padding: 12px 10px;
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
+            font-size: 0.9em;
         }
-        .student-card.status-absent {
-            border-left-color: #ff007f;
-            background: #1a0813;
-        }
-        .student-card.status-present {
-            border-left-color: #00ff66;
-            background: #081a10;
-        }
-
-        /* Hàng trên: Họ tên + SĐT + Nút Gọi & Nút Xóa */
-        .student-info-row {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            gap: 8px;
-            border-bottom: 1px solid #222;
-            padding-bottom: 6px;
-        }
-        .student-meta {
-            display: flex;
-            flex-direction: column;
-            gap: 2px;
-            flex: 1;
-        }
-        .student-name {
-            font-weight: bold;
-            font-size: 0.95rem;
-            color: #fff;
-        }
-        .student-phone {
-            font-size: 0.8rem;
-            color: #888;
-        }
-        .student-actions-right {
-            display: flex;
-            gap: 5px;
-        }
-        
-        .btn-call { 
-            background: #ffd700; 
-            color: #000; 
-            padding: 8px 12px;
-            font-size: 0.9rem;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            box-shadow: 0 0 5px #ffd700;
-        }
-        .btn-delete {
-            background: #4a0000;
-            color: #ff3333;
-            border: 1px solid #ff3333;
-            padding: 8px 10px;
-            font-size: 0.9rem;
-            border-radius: 4px;
-            cursor: pointer;
-        }
-        .btn-delete:active {
-            background: #ff3333;
-            color: #fff;
-        }
-
-        /* Hàng dưới: Đi học + Vắng + Ghi chú */
-        .student-controls-row {
-            display: flex;
-            gap: 6px;
-            align-items: center;
-        }
-        
-        .btn-action {
-            flex: 1;
-            padding: 10px 3px;
-            font-size: 0.8rem;
-            font-weight: bold;
-            border: none;
-            border-radius: 3px;
-            cursor: pointer;
-            text-align: center;
-            color: #fff;
-            background: #333;
-        }
-        .btn-absent { background: #4a0025; color: #ff007f; border: 1px solid #ff007f; }
-        .btn-absent.active { background: #ff007f; color: #fff; box-shadow: 0 0 10px #ff007f; }
-        
-        .btn-present { background: #003311; color: #00ff66; border: 1px solid #00ff66; }
-        .btn-present.active { background: #00ff66; color: #000; box-shadow: 0 0 10px #00ff66; }
-
-        .note-select {
-            flex: 1.5;
-            background: #1a1a3a;
-            color: #00f0ff;
-            border: 1px solid #00f0ff;
-            padding: 9px 3px;
-            font-size: 0.8rem;
-            border-radius: 3px;
-            outline: none;
+        @media screen and (max-width: 600px) {
+            table, thead, tbody, th, td, tr {
+                display: block;
+            }
+            thead tr {
+                position: absolute;
+                top: -9999px;
+                left: -9999px;
+            }
+            tr {
+                border: 1px solid #ccc;
+                margin-bottom: 10px;
+                border-radius: 4px;
+                padding: 10px;
+            }
+            td {
+                border: none;
+                border-bottom: 1px solid #eee;
+                position: relative;
+                padding-left: 50%;
+                text-align: right;
+            }
+            td:before {
+                position: absolute;
+                left: 10px;
+                width: 45%;
+                padding-right: 10px;
+                white-space: nowrap;
+                text-align: left;
+                font-weight: bold;
+            }
+            td:nth-of-type(1):before { content: "Họ và Tên"; }
+            td:nth-of-type(2):before { content: "Liên hệ"; }
+            td:nth-of-type(3):before { content: "Tên Lớp"; }
+            td:nth-of-type(4):before { content: "Thời Gian Giảng Dạy"; }
         }
     </style>
 </head>
 <body>
 
-    <h2>Hệ Thống Điểm Danh</h2>
-    <div class="class-stats" id="classStats">Sĩ số: 0 | Có mặt: 0 | Vắng: 0</div>
+<div class="container">
+    <h2>DANH SÁCH GIÁO VIÊN</h2>
+    
+    <table>
+        <thead>
+            <tr>
+                <th>Họ và Tên</th>
+                <th>Liên hệ</th>
+                <th>Tên Lớp</th>
+                <th>Thời Gian Giảng Dạy</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><strong>Nguyễn Văn A</strong></td>
+                <td><a href="tel:0901234567" class="btn-call">📞 Gọi: 0901.234.567</a></td>
+                <td><span class="badge-lop">Lớp 10A1</span></td>
+                <td>Thứ 2, Thứ 4 (08:00 - 10:00)</td>
+            </tr>
+            <tr>
+                <td><strong>Trần Thị B</strong></td>
+                <td><a href="tel:0912345678" class="btn-call">📞 Gọi: 0912.345.678</a></td>
+                <td><span class="badge-lop">Lớp 11B2</span></td>
+                <td>Thứ 3, Thứ 5 (14:00 - 16:00)</td>
+            </tr>
+            <tr>
+                <td><strong>Lê Hoàng C</strong></td>
+                <td><a href="tel:0983456789" class="btn-call">📞 Gọi: 0983.456.789</a></td>
+                <td><span class="badge-lop">Lớp 12C3</span></td>
+                <td>Thứ 7 (09:00 - 11:30)</td>
+            </tr>
+            <tr>
+                <td><strong>Phạm Minh D</strong></td>
+                <td><a href="tel:0977888999" class="btn-call">📞 Gọi: 0977.888.999</a></td>
+                <td><span class="badge-lop">Lớp Luyện Thi</span></td>
+                <td>Chủ Nhật (18:00 - 20:00)</td>
+            </tr>
+        </tbody>
+    </table>
+</div>
 
-    <div class="class-panel">
-        <h3>Danh Sách: Lớp 10A1</h3>
-        <br>
-
-        <div class="add-student-box">
-            <input type="text" id="newStudentName" placeholder="Dòng 1: Nhập họ và tên học sinh...">
-            <input type="tel" id="newStudentPhone" placeholder="Dòng 2: Nhập số điện thoại...">
-            <button class="btn-add" onclick="addNewStudent()">+ Thêm vào danh sách</button>
-        </div>
-        
-        <div class="absent-section">
-            <div class="absent-header">
-                <span class="absent-title">DANH SÁCH VẮNG KÈM GHI CHÚ</span>
-                <button class="copy-btn" onclick="copyAbsentList()">Copy</button>
-            </div>
-            <ul class="absent-list" id="absentList">
-                <li><em>Chưa có học sinh vắng</em></li>
-            </ul>
-        </div>
-
-        <div class="student-list" id="studentList"></div>
-    </div>
-
-    <script>
-        const defaultStudents = [
-            { id: 1, name: "Nguyễn Văn An", phone: "0901234501", status: "present", note: "" },
-            { id: 2, name: "Trần Thị Bình", phone: "0901234502", status: "present", note: "" },
-            { id: 3, name: "Lê Hoàng Cường", phone: "0901234503", status: "present", note: "" },
-            { id: 4, name: "Phạm Minh Duy", phone: "0901234504", status: "present", note: "" },
-            { id: 5, name: "Hoàng Thu Thủy Đào", phone: "0901234505", status: "present", note: "" },
-            { id: 6, name: "Nguyễn Giang Đông", phone: "0901234506", status: "present", note: "" },
-            { id: 7, name: "Vũ Thị Hạnh", phone: "0901234507", status: "present", note: "" },
-            { id: 8, name: "Đỗ Gia Huy", phone: "0901234508", status: "present", note: "" },
-            { id: 9, name: "Bùi Quốc Khánh", phone: "0901234509", status: "present", note: "" },
-            { id: 10, name: "Phan Thùy Linh", phone: "0901234510", status: "present", note: "" },
-            { id: 11, name: "Ngô Văn Minh", phone: "0901234511", status: "present", note: "" },
-            { id: 12, name: "Tạ Thị Nam", phone: "0901234512", status: "present", note: "" },
-            { id: 13, name: "Dương Đức Phong", phone: "0901234513", status: "present", note: "" },
-            { id: 14, name: "Lý Thanh Phúc", phone: "0901234514", status: "present", note: "" },
-            { id: 15, name: "Vương Minh Quân", phone: "0901234515", status: "present", note: "" },
-            { id: 16, name: "Đặng Hồng Sơn", phone: "0901234516", status: "present", note: "" },
-            { id: 17, name: "Trịnh Minh Tâm", phone: "0901234517", status: "present", note: "" },
-            { id: 18, name: "Mai Đức Thành", phone: "0901234518", status: "present", note: "" },
-            { id: 19, name: "Hồ Phương Thảo", phone: "0901234519", status: "present", note: "" },
-            { id: 20, name: "Cao Xuân Tiến", phone: "0901234520", status: "present", note: "" },
-            { id: 21, name: "Đinh Quốc Toàn", phone: "0901234521", status: "present", note: "" },
-            { id: 22, name: "Đoàn Minh Tú", phone: "0901234522", status: "present", note: "" },
-            { id: 23, name: "Lâm Phước Hải Uyên", phone: "0901234523", status: "present", note: "" },
-            { id: 24, name: "Trần Anh Vũ", phone: "0901234524", status: "present", note: "" },
-            { id: 25, name: "Hoàng Như Xuân", phone: "0901234525", status: "present", note: "" }
-        ];
-
-        let myClass = {
-            name: "Lớp 10A1",
-            students: []
-        };
-
-        function loadData() {
-            const savedData = localStorage.getItem('classData_10A1');
-            if (savedData) {
-                myClass.students = JSON.parse(savedData);
-            } else {
-                myClass.students = defaultStudents;
-                saveData();
-            }
-        }
-
-        function saveData() {
-            localStorage.setItem('classData_10A1', JSON.stringify(myClass.students));
-        }
-
-        window.onload = function() {
-            loadData();
-            renderStudentList();
-            renderAbsentList();
-            updateStats();
-        };
-
-        function updateStats() {
-            const total = myClass.students.length;
-            const absentCount = myClass.students.filter(s => s.status === 'absent').length;
-            const presentCount = total - absentCount;
-            document.getElementById('classStats').innerText = `Sĩ số: ${total} | Có mặt: ${presentCount} | Vắng: ${absentCount}`;
-        }
-
-        function addNewStudent() {
-            const nameInput = document.getElementById('newStudentName');
-            const phoneInput = document.getElementById('newStudentPhone');
-            
-            const name = nameInput.value.trim();
-            const phone = phoneInput.value.trim() || "Chưa có";
-
-            if (name === "") {
-                alert("Vui lòng nhập tên học sinh!");
-                return;
-            }
-
-            const nextId = myClass.students.length > 0 ? Math.max(...myClass.students.map(s => s.id)) + 1 : 1;
-
-            const newStudent = {
-                id: nextId,
-                name: name,
-                phone: phone,
-                status: "present",
-                note: ""
-            };
-
-            myClass.students.push(newStudent);
-            saveData();
-
-            nameInput.value = "";
-            phoneInput.value = "";
-
-            renderStudentList();
-            renderAbsentList();
-            updateStats();
-        }
-
-        // TÍNH NĂNG XÓA HỌC SINH
-        function deleteStudent(studentId, studentName) {
-            const confirmDelete = confirm(`Bạn có chắc chắn muốn XÓA học sinh "${studentName}" ra khỏi lớp?`);
-            if (confirmDelete) {
-                // Lọc bỏ học sinh được chọn
-                myClass.students = myClass.students.filter(s => s.id !== studentId);
-                
-                // Cập nhật lại số thứ tự hiển thị (STT) dựa trên danh sách mới
-                myClass.students.forEach((s, index) => {
-                    s.id = index + 1;
-                });
-
-                saveData(); // Lưu lại vào localStorage
-                renderStudentList();
-                renderAbsentList();
-                updateStats();
-            }
-        }
-
-        function renderStudentList() {
-            const container = document.getElementById('studentList');
-            container.innerHTML = '';
-
-            myClass.students.forEach(student => {
-                const card = document.createElement('div');
-                card.className = `student-card status-${student.status}`;
-
-                const absentActive = student.status === 'absent' ? 'active' : '';
-                const presentActive = student.status === 'present' ? 'active' : '';
-
-                card.innerHTML = `
-                    <div class="student-info-row">
-                        <div class="student-meta">
-                            <span class="student-name">${student.id}. ${student.name}</span>
-                            <span class="student-phone">SĐT: ${student.phone}</span>
-                        </div>
-                        <div class="student-actions-right">
-                            <button class="btn-call" onclick="callStudent('${student.phone}')">📞</button>
-                            <button class="btn-delete" onclick="deleteStudent(${student.id}, '${student.name}')">🗑️</button>
-                        </div>
-                    </div>
-                    
-                    <div class="student-controls-row">
-                        <button class="btn-action btn-absent ${absentActive}" onclick="updateStatus(${student.id}, 'absent')">Vắng</button>
-                        <button class="btn-action btn-present ${presentActive}" onclick="updateStatus(${student.id}, 'present')">Đi Học</button>
-                        
-                        <select class="note-select" onchange="updateNote(${student.id}, this.value)">
-                            <option value="" ${student.note === '' ? 'selected' : ''}>-- Ghi chú --</option>
-                            <option value="Không phép" ${student.note === 'Không phép' ? 'selected' : ''}>Không phép</option>
-                            <option value="Có phép" ${student.note === 'Có phép' ? 'selected' : ''}>Có phép</option>
-                            <option value="Muộn" ${student.note === 'Muộn' ? 'selected' : ''}>Đi muộn</option>
-                            <option value="Ốm" ${student.note === 'Ốm' ? 'selected' : ''}>Ốm đau</option>
-                        </select>
-                    </div>
-                `;
-                container.appendChild(card);
-            });
-        }
-
-        function updateStatus(studentId, status) {
-            const student = myClass.students.find(s => s.id === studentId);
-            student.status = status;
-            saveData();
-            renderStudentList();
-            renderAbsentList();
-            updateStats();
-        }
-
-        function updateNote(studentId, noteValue) {
-            const student = myClass.students.find(s => s.id === studentId);
-            student.note = noteValue;
-            saveData();
-            renderAbsentList();
-        }
-
-        function renderAbsentList() {
-            const listContainer = document.getElementById('absentList');
-            listContainer.innerHTML = '';
-
-            const absentStudents = myClass.students.filter(s => s.status === 'absent');
-
-            if (absentStudents.length === 0) {
-                listContainer.innerHTML = '<li><em>Chưa có học sinh vắng</em></li>';
-                return;
-            }
-
-            absentStudents.forEach(s => {
-                const li = document.createElement('li');
-                const noteText = s.note ? ` (${s.note})` : ' (Chưa rõ lý do)';
-                li.innerText = `• ${s.name}${noteText}`;
-                listContainer.appendChild(li);
-            });
-        }
-
-        function copyAbsentList() {
-            const total = myClass.students.length;
-            const absentStudents = myClass.students.filter(s => s.status === 'absent');
-            const absentCount = absentStudents.length;
-            const presentCount = total - absentCount;
-
-            let copyText = `BÁO CÁO ĐIỂM DANH: ${myClass.name}\n`;
-            copyText += `Sĩ số: ${total} (Có mặt: ${presentCount} | Vắng: ${absentCount})\n`;
-            copyText += `-------------------------\n`;
-            copyText += `Danh sách học sinh vắng mặt:\n`;
-
-            if (absentCount === 0) {
-                copyText += "- Không có học sinh vắng (Lớp đủ).";
-            } else {
-                absentStudents.forEach((s, index) => {
-                    const noteText = s.note ? ` (${s.note})` : '';
-                    copyText += `${index + 1}. ${s.name}${noteText}\n`;
-                });
-            }
-
-            navigator.clipboard.writeText(copyText).then(() => {
-                alert(`Đã copy báo cáo kèm sĩ số lớp ${myClass.name}!`);
-            }).catch(err => {
-                alert('Không thể sao chép.');
-            });
-        }
-
-        function callStudent(phone) {
-            if(phone === "Chưa có") {
-                alert("Học sinh này chưa cập nhật SĐT!");
-                return;
-            }
-            window.location.href = `tel:${phone}`;
-        }
-    </script>
 </body>
 </html>
