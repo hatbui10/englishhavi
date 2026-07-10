@@ -173,7 +173,7 @@
             margin-bottom: 6px;
         }
         .class-section.hidden {
-            display: none; /* Ẩn khối lớp B nếu giáo viên không dạy lớp thứ 2 */
+            display: none;
         }
         .class-section-title {
             font-size: 0.8em;
@@ -203,7 +203,7 @@
             font-size: 0.78em;
         }
         .session-row.hidden {
-            display: none; /* Ẩn ô lịch nếu không có dữ liệu buổi đó */
+            display: none;
         }
         .session-title {
             font-weight: bold;
@@ -333,8 +333,10 @@
             // Logic ẩn khối lớp B nếu giáo viên không có dữ liệu lớp thứ 2
             const hideClassB = (!item.lopB || !item.lopB.tenLop || item.lopB.tenLop.includes("Không có")) ? "hidden" : "";
             
-            // Logic ẩn từng buổi lẻ nếu trống dữ liệu lịch học để màn hình siêu gọn
+            // Tự động ẩn buổi học lẻ nếu không có dữ liệu lịch
+            const hideB1 = (!item.lopA.b1 || item.lopA.b1 === "Trống") ? "hidden" : "";
             const hideB2 = (!item.lopA.b2 || item.lopA.b2 === "Trống") ? "hidden" : "";
+            const hideB3 = (hideClassB || !item.lopB.b3 || item.lopB.b3 === "Trống") ? "hidden" : "";
             const hideB4 = (hideClassB || !item.lopB.b4 || item.lopB.b4 === "Trống") ? "hidden" : "";
 
             const card = document.createElement("div");
@@ -348,7 +350,7 @@
                 <div class="class-section">
                     <div class="class-section-title">${item.lopA.tenLop}</div>
                     <div class="session-container">
-                        <div class="session-row">
+                        <div class="session-row ${hideB1}">
                             <span class="session-title">B1:</span>
                             <div class="session-info">${item.lopA.b1}</div>
                         </div>
@@ -363,7 +365,7 @@
                 <div class="class-section ${hideClassB}">
                     <div class="class-section-title">${item.lopB ? item.lopB.tenLop : ''}</div>
                     <div class="session-container">
-                        <div class="session-row">
+                        <div class="session-row ${hideB3}">
                             <span class="session-title">B3:</span>
                             <div class="session-info">${item.lopB ? item.lopB.b3 : ''}</div>
                         </div>
@@ -444,10 +446,11 @@
         return "chinh";
     }
 
-    // 🛠️ ĐỊNH TUYẾN GOM LỊCH THÔNG MINH THEO TÊN LỚP HỌC
+    // 🛠️ THUẬT TOÁN ĐÃ ĐƯỢC CHỈNH SỬA CHUẨN XÁC THEO FILE EXCEL THỰC TẾ
     function parseMatrixAndMerge(matrix, currentGroupArray) {
         let headerIndex = -1;
 
+        // Tìm dòng tiêu đề (Họ và Tên)
         for (let i = 0; i < matrix.length; i++) {
             if (!matrix[i]) continue;
             const row = matrix[i].map(cell => cell ? cell.toString().trim().toLowerCase() : "");
@@ -467,13 +470,13 @@
             const sdt = row[1] ? row[1].toString().trim() : "";
             const incomingClassName = row[2] ? "📖 " + row[2].toString().trim() : "📖 Lớp dạy 1";
             
-            // Lịch nạp vào mặc định ở cột 3
+            // File thực tế chỉ có 1 cột lịch học ở vị trí cột thứ 4 (row[3])
             const incomingSchedule = row[3] ? row[3].toString().trim() : "Trống";
 
             const rawPhone = getRawPhone(sdt);
             const uniqueKey = rawPhone ? rawPhone : hoTen.toLowerCase().replace(/\s+/g, '');
 
-            // 1. Tìm xem giáo viên này đã tồn tại trong danh sách chưa
+            // 1. Tìm giáo viên trong danh sách mảng tạm
             let existingTeacher = currentGroupArray.find(item => {
                 const itemPhone = getRawPhone(item.sdt);
                 const itemKey = itemPhone ? itemPhone : item.hoTen.toLowerCase().replace(/\s+/g, '');
@@ -481,12 +484,16 @@
             });
 
             if (existingTeacher) {
-                // 2. NẾU ĐÃ TỒN TẠI GIÁO VIÊN: Kiểm tra tên lớp học trùng hay khác
+                // 2. NẾU ĐÃ CÓ GIÁO VIÊN: Kiểm tra tên lớp học
                 if (existingTeacher.lopA.tenLop.toLowerCase() === incomingClassName.toLowerCase()) {
-                    // CÙNG TÊN LỚP -> Đẩy vào Buổi 2 (B2) của Lớp A thay vì nhảy sang Lớp B
-                    existingTeacher.lopA.b2 = incomingSchedule;
+                    // CÙNG TÊN LỚP A: Xếp vào Buổi 2 (B2)
+                    if (existingTeacher.lopA.b1 === "Trống") {
+                        existingTeacher.lopA.b1 = incomingSchedule;
+                    } else {
+                        existingTeacher.lopA.b2 = incomingSchedule;
+                    }
                 } else {
-                    // KHÁC TÊN LỚP -> Chuyển sang kích hoạt Lớp B (B3 và B4)
+                    // KHÁC TÊN LỚP A -> Đẩy xuống khối Lớp B
                     if (!existingTeacher.lopB || existingTeacher.lopB.tenLop.includes("Không có")) {
                         existingTeacher.lopB = {
                             tenLop: incomingClassName,
@@ -494,12 +501,16 @@
                             b4: "Trống"
                         };
                     } else if (existingTeacher.lopB.tenLop.toLowerCase() === incomingClassName.toLowerCase()) {
-                        // Nếu dòng thứ 4 xuất hiện lại của lớp B thì cho vào B4
-                        existingTeacher.lopB.b4 = incomingSchedule;
+                        // Trùng tên Lớp B: Xếp tuần tự vào B3 hoặc B4
+                        if (existingTeacher.lopB.b3 === "Trống") {
+                            existingTeacher.lopB.b3 = incomingSchedule;
+                        } else {
+                            existingTeacher.lopB.b4 = incomingSchedule;
+                        }
                     }
                 }
             } else {
-                // 3. NẾU CHƯA CÓ GIÁO VIÊN: Tạo mới hoàn toàn, gán lịch vào Buổi 1 (B1)
+                // 3. NẾU CHƯA CÓ GIÁO VIÊN: Khởi tạo thẻ mới, gán lịch dòng đầu vào B1
                 currentGroupArray.push({
                     hoTen: hoTen,
                     sdt: sdt,
@@ -523,15 +534,4 @@
         if(confirm("Bạn có chắc chắn muốn xóa toàn bộ danh sách cũ không?")) {
             localStorage.removeItem("gvChinhData");
             localStorage.removeItem("gvPhanNhomData");
-            localStorage.removeItem("troGiangData");
-            gvChinhData = []; gvPhanNhomData = []; troGiangData = [];
-            renderAllLists();
-            document.getElementById("excelFileInput").value = "";
-            document.getElementById("fileStatus").innerText = "Dữ liệu đã được xóa sạch. Hãy tải file mới.";
-        }
-    }
-
-    function renderAllLists() {
-        renderCardList(gvChinhData, "gv-chinh-cards");
-        renderCardList(gvPhanNhomData, "gv-phan-nhom-cards");
-        re
+            localStorage.removeIte
