@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Quản Lý Nhân Sự Giảng Dạy</title>
+    <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
     <style>
         * {
             box-sizing: border-box;
@@ -32,6 +33,68 @@
             font-size: 1.2em;
             text-transform: uppercase;
             letter-spacing: 0.5px;
+        }
+
+        /* 📂 KHU VỰC THAO TÁC (TẢI FILE / XÓA) */
+        .action-section {
+            background: #262631;
+            padding: 10px;
+            border-radius: 10px;
+            margin-bottom: 12px;
+            border: 1px dashed #4a4a5a;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        .btn-group-top {
+            display: flex;
+            gap: 6px;
+        }
+        .upload-btn-wrapper {
+            position: relative;
+            overflow: hidden;
+            flex: 1;
+        }
+        .btn-action-top {
+            width: 100%;
+            border: 1px solid #3498db;
+            color: #3498db;
+            background-color: transparent;
+            padding: 8px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: bold;
+            transition: all 0.2s;
+            cursor: pointer;
+            text-align: center;
+        }
+        .btn-action-top:active {
+            background-color: #3498db;
+            color: white;
+        }
+        .btn-danger {
+            border-color: #e74c3c;
+            color: #e74c3c;
+            flex: 1;
+        }
+        .btn-danger:active {
+            background-color: #e74c3c;
+            color: white;
+        }
+        .upload-btn-wrapper input[type=file] {
+            font-size: 100px;
+            position: absolute;
+            left: 0;
+            top: 0;
+            opacity: 0;
+            width: 100%;
+            height: 100%;
+        }
+        .file-status {
+            font-size: 0.75em;
+            color: #94a3b8;
+            text-align: center;
+            line-height: 1.3;
         }
 
         /* 📱 THANH TIÊU ĐỀ ACCORDION BẤM ĐỂ ĐÓNG/MỞ */
@@ -176,12 +239,30 @@
         .btn-phone { background-color: #1ba3b5; }
         .btn-zalo { background-color: #0068ff; }
         .btn-action:active { opacity: 0.7; }
+        .no-data {
+            text-align: center;
+            color: #64748b;
+            padding: 14px 0;
+            font-size: 0.85em;
+        }
     </style>
 </head>
 <body>
 
 <div class="container">
     <h2>Quản Lý Nhân Sự</h2>
+    
+    <!-- 📂 THANH THAO TÁC FILE ĐÃ QUAY TRỞ LẠI -->
+    <div class="action-section">
+        <div class="btn-group-top">
+            <div class="upload-btn-wrapper">
+                <button class="btn-action-top">📂 Tải file Excel</button>
+                <input type="file" id="excelFileInput" accept=".xlsx, .xls" multiple onchange="handleExcelFiles(this.files)">
+            </div>
+            <button class="btn-action-top btn-danger" onclick="clearStoredData()">🗑️ Xóa cũ</button>
+        </div>
+        <div id="fileStatus" class="file-status">Đang sử dụng bộ nhớ tự động của trình duyệt.</div>
+    </div>
     
     <!-- 1. GIÁO VIÊN CHÍNH -->
     <div class="accordion-header header-chinh" onclick="toggleAccordion('gv-chinh-content', this)">
@@ -212,47 +293,34 @@
 </div>
 
 <script>
-    const danhSachGvChinh = [
-        { 
-            hoTen: "Anh Thư", sdt: "0901234567",
-            lopA: { tenLop: "📖 Lớp 10A1", b1: "T2 (08:00-10:00) - Ca 1", b2: "T4 (08:00-10:00) - Ca 1" },
-            lopB: { tenLop: "📖 Lớp 11B3", b3: "T3 (14:00-16:00) - Ca 3", b4: "T5 (14:00-16:00) - Ca 3" }
-        },
-        { 
-            hoTen: "Phương Thanh", sdt: "0912345678",
-            lopA: { tenLop: "📖 Lớp VIP 1", b1: "Thứ 2 (18:00 - 20:00)", b2: "Thứ 6 (18:00 - 20:00)" },
-            lopB: { tenLop: "📖 Lớp VIP 2", b3: "Thứ 7 (09:00 - 11:00)", b4: "CN (09:00 - 11:00)" }
-        }
-    ];
-
-    const danhSachGvPhanNhom = [
-        { 
-            hoTen: "Hà Linh", sdt: "0912345680",
-            lopA: { tenLop: "👥 Nhóm Toán 1", b1: "Thứ 3 (14:00 - 16:00)", b2: "Thứ 5 (14:00 - 16:00)" },
-            lopB: { tenLop: "👥 Nhóm Toán 2", b3: "Thứ 3 (16:30 - 18:30)", b4: "Thứ 5 (16:30 - 18:30)" }
-        }
-    ];
-
-    const danhSachTroGiang = [
-        { 
-            hoTen: "Phạm Minh D", sdt: "0977888999",
-            lopA: { tenLop: "✏️ Hỗ trợ lớp 10", b1: "Thứ 2 (Ca sáng)", b2: "Thứ 4 (Ca sáng)" },
-            lopB: { tenLop: "✏️ Hỗ trợ lớp 11", b3: "Thứ 3 (Ca chiều)", b4: "Thứ 5 (Ca chiều)" }
-        }
-    ];
+    let gvChinhData = [];
+    let gvPhanNhomData = [];
+    let troGiangData = [];
 
     function getRawPhone(phoneStr) {
-        return phoneStr.replace(/[^0-9]/g, "");
+        if (!phoneStr) return "";
+        let cleanPhone = phoneStr.toString().trim().replace(/[^0-9]/g, "");
+        if (cleanPhone.length > 0 && !cleanPhone.startsWith("0")) {
+            cleanPhone = "0" + cleanPhone;
+        }
+        return cleanPhone;
     }
 
     function formatPhoneDisplay(phoneStr) {
-        if (!phoneStr) return "";
-        return phoneStr.replace(/(\d{4})(\d{3})(\d{3})/, "$1.$2.$3");
+        let clean = getRawPhone(phoneStr);
+        if (!clean) return "";
+        return clean.replace(/(\d{4})(\d{3})(\d{3})/, "$1.$2.$3");
     }
 
+    // Đổ dữ liệu cấu trúc 2 lớp - 4 lịch học sạch sẽ
     function renderCardList(dataArray, targetContainerId) {
         const container = document.getElementById(targetContainerId);
         container.innerHTML = ""; 
+
+        if(!dataArray || dataArray.length === 0) {
+            container.innerHTML = `<div class="no-data">Chưa có dữ liệu ở nhóm này.</div>`;
+            return;
+        }
 
         dataArray.forEach(item => {
             const rawPhone = getRawPhone(item.sdt);
@@ -302,10 +370,145 @@
         });
     }
 
+    // 📂 HÀM ĐỌC EXCEL TOÀN DIỆN MỌI SHEET (CỘNG DỒN)
+    function handleExcelFiles(files) {
+        if (files.length === 0) return;
+        
+        let fileNames = [];
+        let tempChinh = [];
+        let tempPhanNhom = [];
+        let tempTroGiang = [];
+        let filesProcessed = 0;
+
+        for (let i = 0; i < files.length; i++) {
+            const file = files[i];
+            fileNames.push(file.name);
+            
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const data = new Uint8Array(e.target.result);
+                const workbook = XLSX.read(data, { type: 'array' });
+                
+                // Quét qua mọi sheet trong file
+                workbook.SheetNames.forEach(sheetName => {
+                    const worksheet = workbook.Sheets[sheetName];
+                    const matrixData = XLSX.utils.sheet_to_json(worksheet, { header: 1 });
+                    
+                    if (matrixData && matrixData.length > 0) {
+                        const parsedSheetData = parseMatrix(matrixData);
+                        
+                        if (parsedSheetData.length > 0) {
+                            const targetGroup = targetClassification(file.name, sheetName);
+                            
+                            if (targetGroup === "nhom") {
+                                tempPhanNhom = tempPhanNhom.concat(parsedSheetData);
+                            } else if (targetGroup === "giang") {
+                                tempTroGiang = tempTroGiang.concat(parsedSheetData);
+                            } else {
+                                tempChinh = tempChinh.concat(parsedSheetData);
+                            }
+                        }
+                    }
+                });
+
+                filesProcessed++;
+                
+                if (filesProcessed === files.length) {
+                    gvChinhData = tempChinh;
+                    gvPhanNhomData = tempPhanNhom;
+                    troGiangData = tempTroGiang;
+
+                    localStorage.setItem("gvChinhData", JSON.stringify(gvChinhData));
+                    localStorage.setItem("gvPhanNhomData", JSON.stringify(gvPhanNhomData));
+                    localStorage.setItem("troGiangData", JSON.stringify(troGiangData));
+                    
+                    renderAllLists();
+                }
+            };
+            reader.readAsArrayBuffer(file);
+        }
+        document.getElementById("fileStatus").innerText = "Đã nạp: " + fileNames.join(", ");
+    }
+
+    function targetClassification(fileName, sheetName) {
+        const textToCheck = (sheetName + "_" + fileName).toLowerCase();
+        if (textToCheck.includes("nhom") || textToCheck.includes("nhóm")) return "nhom";
+        if (textToCheck.includes("giang") || textToCheck.includes("giảng") || textToCheck.includes("tro") || textToCheck.includes("trợ")) return "giang";
+        return "chinh";
+    }
+
+    // Thiết kế bóc ma trận 4 lịch cho Excel đầu vào
+    function parseMatrix(matrix) {
+        let parsedData = [];
+        let headerIndex = -1;
+
+        for (let i = 0; i < matrix.length; i++) {
+            if (!matrix[i]) continue;
+            const row = matrix[i].map(cell => cell ? cell.toString().trim().toLowerCase() : "");
+            if (row.some(cell => cell.includes("họ và tên") || cell.includes("ho va ten") || cell.includes("họ tên"))) {
+                headerIndex = i;
+                break;
+            }
+        }
+
+        let startRow = headerIndex !== -1 ? headerIndex + 1 : 1;
+
+        for (let i = startRow; i < matrix.length; i++) {
+            const row = matrix[i];
+            if (!row || row.length === 0 || !row[0]) continue; 
+            
+            // Đọc cấu trúc: Tên (cột 0), SĐT (cột 1), Tên lớp A (cột 2), B1 (cột 3), B2 (cột 4), Tên lớp B (cột 5), B3 (cột 6), B4 (cột 7)
+            parsedData.push({
+                hoTen: row[0] ? row[0].toString().trim() : "",
+                sdt: row[1] ? row[1].toString().trim() : "",
+                lopA: {
+                    tenLop: row[2] ? "📖 " + row[2].toString().trim() : "📖 Lớp dạy 1",
+                    b1: row[3] ? row[3].toString().trim() : "Chưa xếp lịch",
+                    b2: row[4] ? row[4].toString().trim() : "Chưa xếp lịch"
+                },
+                lopB: {
+                    tenLop: row[5] ? "📖 " + row[5].toString().trim() : "📖 Lớp dạy 2",
+                    b3: row[6] ? row[6].toString().trim() : "Chưa xếp lịch",
+                    b4: row[7] ? row[7].toString().trim() : "Chưa xếp lịch"
+                }
+            });
+        }
+        return parsedData;
+    }
+
+    function clearStoredData() {
+        if(confirm("Bạn có chắc chắn muốn xóa toàn bộ danh sách cũ không?")) {
+            localStorage.removeItem("gvChinhData");
+            localStorage.removeItem("gvPhanNhomData");
+            localStorage.removeItem("troGiangData");
+            gvChinhData = []; gvPhanNhomData = []; troGiangData = [];
+            renderAllLists();
+            document.getElementById("excelFileInput").value = "";
+            document.getElementById("fileStatus").innerText = "Dữ liệu đã được xóa sạch. Hãy tải file mới.";
+        }
+    }
+
+    function renderAllLists() {
+        renderCardList(gvChinhData, "gv-chinh-cards");
+        renderCardList(gvPhanNhomData, "gv-phan-nhom-cards");
+        renderCardList(troGiangData, "tro-giang-cards");
+    }
+
+    function loadSavedData() {
+        const storedChinh = localStorage.getItem("gvChinhData");
+        const storedNhom = localStorage.getItem("gvPhanNhomData");
+        const storedGiang = localStorage.getItem("troGiangData");
+
+        if (storedChinh) gvChinhData = JSON.parse(storedChinh);
+        if (storedNhom) gvPhanNhomData = JSON.parse(storedNhom);
+        if (storedGiang) troGiangData = JSON.parse(storedGiang);
+
+        renderAllLists();
+    }
+
     function toggleAccordion(contentId, headerElement) {
         const content = document.getElementById(contentId);
         const isOpen = content.classList.contains('open');
-        
         if (isOpen) {
             content.classList.remove('open');
             headerElement.classList.remove('active');
@@ -316,11 +519,10 @@
     }
 
     window.onload = function() {
-        renderCardList(danhSachGvChinh, "gv-chinh-cards");
-        renderCardList(danhSachGvPhanNhom, "gv-phan-nhom-cards");
-        renderCardList(danhSachTroGiang, "tro-giang-cards");
+        loadSavedData();
     };
 </script>
 
 </body>
-</html>
+    </html>
+    
