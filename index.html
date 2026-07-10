@@ -1,3 +1,13 @@
+📂 Mở File
+🔄 Reset
+↩ Undo
+↪ Redo
+⌨️ Phím nhanh
+HTML
+CSS
+JS
+💾 LƯU FILE
+CHẠY ▶
 <!DOCTYPE html>
 <html lang="vi">
 <head>
@@ -119,34 +129,66 @@
                 <th>Thời Gian Giảng Dạy</th>
             </tr>
         </thead>
-        <tbody>
-            <tr>
-                <td><strong>Nguyễn Văn A</strong></td>
-                <td><a href="tel:0901234567" class="btn-call">📞 Gọi: 0901.234.567</a></td>
-                <td><span class="badge-lop">Lớp 10A1</span></td>
-                <td>Thứ 2, Thứ 4 (08:00 - 10:00)</td>
-            </tr>
-            <tr>
-                <td><strong>Trần Thị B</strong></td>
-                <td><a href="tel:0912345678" class="btn-call">📞 Gọi: 0912.345.678</a></td>
-                <td><span class="badge-lop">Lớp 11B2</span></td>
-                <td>Thứ 3, Thứ 5 (14:00 - 16:00)</td>
-            </tr>
-            <tr>
-                <td><strong>Lê Hoàng C</strong></td>
-                <td><a href="tel:0983456789" class="btn-call">📞 Gọi: 0983.456.789</a></td>
-                <td><span class="badge-lop">Lớp 12C3</span></td>
-                <td>Thứ 7 (09:00 - 11:30)</td>
-            </tr>
-            <tr>
-                <td><strong>Phạm Minh D</strong></td>
-                <td><a href="tel:0977888999" class="btn-call">📞 Gọi: 0977.888.999</a></td>
-                <td><span class="badge-lop">Lớp Luyện Thi</span></td>
-                <td>Chủ Nhật (18:00 - 20:00)</td>
-            </tr>
-        </tbody>
+        <tbody id="teacher-table-body">
+            </tbody>
     </table>
 </div>
+
+<script>
+    // Mảng chứa danh sách giáo viên lớp của bạn
+    const danhSachGiaoVien = [
+        {
+            hoTen: "Nguyễn Văn A",
+            sdtRaw: "0901234567",
+            sdtDisplay: "0901.234.567",
+            lop: "Lớp 10A1",
+            thoiGian: "Thứ 2, Thứ 4 (08:00 - 10:00)"
+        },
+        {
+            hoTen: "Trần Thị B",
+            sdtRaw: "0912345678",
+            sdtDisplay: "0912.345.678",
+            lop: "Lớp 11B2",
+            thoiGian: "Thứ 3, Thứ 5 (14:00 - 16:00)"
+        },
+        {
+            hoTen: "Lê Hoàng C",
+            sdtRaw: "0983456789",
+            sdtDisplay: "0983.456.789",
+            lop: "Lớp 12C3",
+            thoiGian: "Thứ 7 (09:00 - 11:30)"
+        },
+        {
+            hoTen: "Phạm Minh D",
+            sdtRaw: "0977888999",
+            sdtDisplay: "0977.888.999",
+            lop: "Lớp Luyện Thi",
+            thoiGian: "Chủ Nhật (18:00 - 20:00)"
+        }
+    ];
+
+    // Hàm render mảng dữ liệu ra bảng HTML
+    function renderTable() {
+        const tbody = document.getElementById("teacher-table-body");
+        tbody.innerHTML = ""; // Xóa dữ liệu cũ nếu có
+
+        danhSachGiaoVien.forEach(gv => {
+            const tr = document.createElement("tr");
+
+            tr.innerHTML = `
+                <td><strong>${gv.hoTen}</strong></td>
+                <td><a href="tel:${gv.sdtRaw}" class="btn-call">📞 Gọi: ${gv.sdtDisplay}</a></td>
+                <td><span class="badge-lop">${gv.lop}</span></td>
+                <td>${gv.thoiGian}</td>
+            `;
+
+            tbody.appendChild(tr);
+        });
+    }
+
+    // Chạy hàm render khi trang web tải xong
+    window.onload = renderTable;
+</script>
 
 </body>
 </html>
