@@ -8,21 +8,21 @@
     <style>
         * {
             box-sizing: border-box;
-            -webkit-tap-highlight-color: transparent; /* Tắt viền xanh khi chạm trên điện thoại */
+            -webkit-tap-highlight-color: transparent;
         }
         body {
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-            background-color: #121216; /* Nền tối sâu */
+            background-color: #121216;
             color: #e2e8f0;
             margin: 0;
-            padding: 8px; /* Giảm padding viền ngoài */
+            padding: 8px;
         }
         .container {
             width: 100%;
             max-width: 500px;
             margin: 0 auto;
             background: #1e1e24;
-            padding: 12px; /* Thu nhỏ padding container */
+            padding: 12px;
             border-radius: 12px;
             box-shadow: 0 8px 24px rgba(0,0,0,0.4);
         }
@@ -35,7 +35,7 @@
             letter-spacing: 0.5px;
         }
 
-        /* 📂 KHU VỰC THAO TÁC (TẢI FILE / XÓA) */
+        /* 📂 KHU VỰC THAO TÁC FILE */
         .action-section {
             background: #262631;
             padding: 10px;
@@ -92,7 +92,7 @@
         }
         .file-status {
             font-size: 0.75em;
-            color: #2ecc71; /* Chuyển màu xanh lá cho trạng thái lưu */
+            color: #2ecc71;
             text-align: center;
             line-height: 1.3;
             font-weight: 500;
@@ -102,7 +102,7 @@
         .accordion-header {
             background-color: #262631;
             color: #3498db;
-            padding: 10px 12px; /* Thu nhỏ thanh tiêu đề */
+            padding: 10px 12px;
             margin-top: 8px;
             border-radius: 8px;
             cursor: pointer;
@@ -126,9 +126,6 @@
         .accordion-header.active .accordion-icon {
             transform: rotate(180deg);
         }
-        .accordion-header:active {
-            background-color: #2d2d3a;
-        }
 
         /* KHỐI NỘI DUNG ẨN MẶC ĐỊNH */
         .accordion-content {
@@ -136,21 +133,20 @@
             margin-top: 6px;
             margin-bottom: 8px;
         }
-        /* Kích hoạt hiển thị danh sách khi nhấn */
         .accordion-content.open {
             display: block !important;
         }
 
-        /* 📱 DANH SÁCH DẠNG THẺ TỐI ƯU KHÔNG GIAN DÒNG */
+        /* 📱 DANH SÁCH DẠNG THẺ */
         .card-list {
             display: flex;
             flex-direction: column;
-            gap: 8px; /* Giảm khoảng cách giữa các thẻ */
+            gap: 8px;
         }
         .user-card {
             background: #262631;
             border-radius: 10px;
-            padding: 10px; /* Thu nhỏ tối đa padding của thẻ */
+            padding: 10px;
             box-shadow: 0 4px 10px rgba(0,0,0,0.15);
             border-left: 3px solid #555566;
         }
@@ -158,7 +154,6 @@
         .header-phan-nhom + .accordion-content .user-card { border-left-color: #9b59b6; }
         .header-tro-giang + .accordion-content .user-card { border-left-color: #e67e22; }
 
-        /* TÊN GIÁO VIÊN */
         .card-top-info {
             margin-bottom: 8px;
             border-bottom: 1px solid #3f3f52;
@@ -170,57 +165,50 @@
             color: #ffffff;
         }
 
-        /* KHỐI LỚP HỌC */
+        /* KHỐI LỚP HỌC ĐỘNG */
         .class-section {
-            margin-bottom: 6px;
-        }
-        .class-section.hidden {
-            display: none;
+            margin-bottom: 8px;
+            background: #20202b;
+            padding: 6px 8px;
+            border-radius: 6px;
         }
         .class-section-title {
             font-size: 0.8em;
             color: #1abc9c;
             font-weight: bold;
             margin-bottom: 4px;
-            display: flex;
-            align-items: center;
-            gap: 4px;
         }
         .header-phan-nhom + .accordion-content .class-section-title { color: #9b59b6; }
         .header-tro-giang + .accordion-content .class-section-title { color: #e67e22; }
 
-        /* 🗓️ KHU VỰC HIỂN THỊ LỊCH HỌC TỐI ƯU KHÔNG XUỐNG DÒNG */
+        /* LỊCH HỌC */
         .session-container {
             display: flex;
             flex-direction: column;
-            gap: 4px;
+            gap: 3px;
         }
         .session-row {
             background: #1e1e24;
-            padding: 5px 8px; /* Thu hẹp tối đa đệm ô lịch */
-            border-radius: 6px;
+            padding: 4px 6px;
+            border-radius: 4px;
             display: flex;
             align-items: center;
             justify-content: space-between;
-            font-size: 0.78em; /* Hạ nhẹ cỡ chữ để đảm bảo ôm trọn lịch dài trên cùng 1 dòng */
-        }
-        .session-row.hidden {
-            display: none;
+            font-size: 0.78em;
         }
         .session-title {
             font-weight: bold;
             color: #94a3b8;
-            min-width: 42px; /* Ép không gian tiêu đề nhỏ lại */
+            margin-right: 6px;
             white-space: nowrap;
         }
         .session-info {
             flex: 1;
             text-align: right;
             color: #e2e8f0;
-            white-space: nowrap; /* Cấm chữ tự động xuống dòng */
+            white-space: nowrap;
             overflow: hidden;
-            text-overflow: ellipsis; /* Nếu quá dài sẽ hiển thị dấu ... thay vì phá hỏng layout */
-            padding-left: 6px;
+            text-overflow: ellipsis;
         }
 
         /* KHU VỰC NÚT LIÊN HỆ */
@@ -236,13 +224,12 @@
             justify-content: center;
             gap: 4px;
             color: white;
-            padding: 8px 0; /* Thu nhỏ nút liên hệ */
+            padding: 8px 0;
             text-decoration: none;
             border-radius: 6px;
             font-weight: bold;
             font-size: 0.8em;
             text-align: center;
-            transition: opacity 0.2s;
         }
         .btn-phone { background-color: #1ba3b5; }
         .btn-zalo { background-color: #0068ff; }
@@ -271,6 +258,7 @@
         <div id="fileStatus" class="file-status">Chưa có dữ liệu trong bộ nhớ.</div>
     </div>
     
+    <!-- 1. GIÁO VIÊN CHÍNH -->
     <div class="accordion-header header-chinh" onclick="toggleAccordion('gv-chinh-content', this)">
         <span>⭐ GIÁO VIÊN CHÍNH</span>
         <span class="accordion-icon">▼</span>
@@ -279,6 +267,7 @@
         <div id="gv-chinh-cards" class="card-list"></div>
     </div>
 
+    <!-- 2. PHÂN NHÓM -->
     <div class="accordion-header header-phan-nhom" onclick="toggleAccordion('gv-phan-nhom-content', this)">
         <span>👥 GIÁO VIÊN PHÂN NHÓM</span>
         <span class="accordion-icon">▼</span>
@@ -287,6 +276,7 @@
         <div id="gv-phan-nhom-cards" class="card-list"></div>
     </div>
 
+    <!-- 3. TRỢ GIẢNG -->
     <div class="accordion-header header-tro-giang" onclick="toggleAccordion('tro-giang-content', this)">
         <span>🧑‍🎓 DANH SÁCH TRỢ GIẢNG</span>
         <span class="accordion-icon">▼</span>
@@ -316,6 +306,7 @@
         return clean.replace(/(\d{4})(\d{3})(\d{3})/, "$1.$2.$3");
     }
 
+    // Hàm render thẻ danh sách dạng lặp động qua từng lớp học của GV
     function renderCardList(dataArray, targetContainerId) {
         const container = document.getElementById(targetContainerId);
         container.innerHTML = ""; 
@@ -329,12 +320,28 @@
             const rawPhone = getRawPhone(item.sdt);
             const displayPhone = formatPhoneDisplay(item.sdt);
             
-            const hideClassB = (!item.lopB || !item.lopB.tenLop || item.lopB.tenLop.includes("Không có")) ? "hidden" : "";
-            
-            const hideB1 = (!item.lopA.b1 || item.lopA.b1 === "Trống") ? "hidden" : "";
-            const hideB2 = (!item.lopA.b2 || item.lopA.b2 === "Trống") ? "hidden" : "";
-            const hideB3 = (hideClassB || !item.lopB.b3 || item.lopB.b3 === "Trống") ? "hidden" : "";
-            const hideB4 = (hideClassB || !item.lopB.b4 || item.lopB.b4 === "Trống") ? "hidden" : "";
+            // Xây dựng chuỗi HTML động cho danh sách các lớp học
+            let classesHtml = "";
+            item.classes.forEach(c => {
+                let sessionsHtml = "";
+                c.schedules.forEach((sch, index) => {
+                    sessionsHtml += `
+                        <div class="session-row">
+                            <span class="session-title">Buổi ${index + 1}:</span>
+                            <div class="session-info">${sch}</div>
+                        </div>
+                    `;
+                });
+
+                classesHtml += `
+                    <div class="class-section">
+                        <div class="class-section-title">📖 ${c.className}</div>
+                        <div class="session-container">
+                            ${sessionsHtml}
+                        </div>
+                    </div>
+                `;
+            });
 
             const card = document.createElement("div");
             card.className = "user-card";
@@ -343,33 +350,7 @@
                     <div class="user-name">${item.hoTen}</div>
                 </div>
                 
-                <div class="class-section">
-                    <div class="class-section-title">${item.lopA.tenLop}</div>
-                    <div class="session-container">
-                        <div class="session-row ${hideB1}">
-                            <span class="session-title">B1:</span>
-                            <div class="session-info">${item.lopA.b1}</div>
-                        </div>
-                        <div class="session-row ${hideB2}">
-                            <span class="session-title">B2:</span>
-                            <div class="session-info">${item.lopA.b2}</div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="class-section ${hideClassB}">
-                    <div class="class-section-title">${item.lopB ? item.lopB.tenLop : ''}</div>
-                    <div class="session-container">
-                        <div class="session-row ${hideB3}">
-                            <span class="session-title">B3:</span>
-                            <div class="session-info">${item.lopB ? item.lopB.b3 : ''}</div>
-                        </div>
-                        <div class="session-row ${hideB4}">
-                            <span class="session-title">B4:</span>
-                            <div class="session-info">${item.lopB ? item.lopB.b4 : ''}</div>
-                        </div>
-                    </div>
-                </div>
+                ${classesHtml}
 
                 <div class="contact-actions">
                     <a href="tel:${rawPhone}" class="btn-action btn-phone">📞 Gọi: ${displayPhone}</a>
@@ -427,6 +408,7 @@
                     localStorage.setItem("troGiangData", JSON.stringify(troGiangData));
                     
                     renderAllLists();
+                    document.getElementById("fileStatus").style.color = "#2ecc71";
                     document.getElementById("fileStatus").innerText = "🔄 Đã lưu bộ nhớ: " + fileNames.join(", ");
                 }
             };
@@ -441,6 +423,7 @@
         return "chinh";
     }
 
+    // Xử lý gộp dữ liệu động thông minh không giới hạn số lớp và số buổi
     function parseMatrixAndMerge(matrix, currentGroupArray) {
         let headerIndex = -1;
 
@@ -461,12 +444,13 @@
             
             const hoTen = row[0] ? row[0].toString().trim() : "";
             const sdt = row[1] ? row[1].toString().trim() : "";
-            const incomingClassName = row[2] ? "📖 " + row[2].toString().trim() : "📖 Lớp dạy 1";
+            const incomingClassName = row[2] ? row[2].toString().trim() : "Lớp dạy";
             const incomingSchedule = row[3] ? row[3].toString().trim() : "Trống";
 
             const rawPhone = getRawPhone(sdt);
             const uniqueKey = rawPhone ? rawPhone : hoTen.toLowerCase().replace(/\s+/g, '');
 
+            // Tìm xem giáo viên đã tồn tại trong mảng chưa
             let existingTeacher = currentGroupArray.find(item => {
                 const itemPhone = getRawPhone(item.sdt);
                 const itemKey = itemPhone ? itemPhone : item.hoTen.toLowerCase().replace(/\s+/g, '');
@@ -474,41 +458,31 @@
             });
 
             if (existingTeacher) {
-                if (existingTeacher.lopA.tenLop.toLowerCase() === incomingClassName.toLowerCase()) {
-                    if (existingTeacher.lopA.b1 === "Trống") {
-                        existingTeacher.lopA.b1 = incomingSchedule;
-                    } else {
-                        existingTeacher.lopA.b2 = incomingSchedule;
+                // Kiểm tra xem lớp này đã tồn tại ở GV đó chưa
+                let existingClass = existingTeacher.classes.find(c => c.className.toLowerCase() === incomingClassName.toLowerCase());
+                if (existingClass) {
+                    // Nếu trùng lớp, đẩy thêm lịch học mới vào lớp đó (Buổi 2, Buổi 3,...)
+                    if (!existingClass.schedules.includes(incomingSchedule)) {
+                        existingClass.schedules.push(incomingSchedule);
                     }
                 } else {
-                    if (!existingTeacher.lopB || existingTeacher.lopB.tenLop.includes("Không có")) {
-                        existingTeacher.lopB = {
-                            tenLop: incomingClassName,
-                            b3: incomingSchedule,
-                            b4: "Trống"
-                        };
-                    } else if (existingTeacher.lopB.tenLop.toLowerCase() === incomingClassName.toLowerCase()) {
-                        if (existingTeacher.lopB.b3 === "Trống") {
-                            existingTeacher.lopB.b3 = incomingSchedule;
-                        } else {
-                            existingTeacher.lopB.b4 = incomingSchedule;
-                        }
-                    }
+                    // Nếu là lớp mới hoàn toàn của GV này, tạo thêm một object lớp mới
+                    existingTeacher.classes.push({
+                        className: incomingClassName,
+                        schedules: [incomingSchedule]
+                    });
                 }
             } else {
+                // Nếu chưa từng xuất hiện, tạo mới hoàn toàn profile GV với mảng classes động
                 currentGroupArray.push({
                     hoTen: hoTen,
                     sdt: sdt,
-                    lopA: {
-                        tenLop: incomingClassName,
-                        b1: incomingSchedule,
-                        b2: "Trống"
-                    },
-                    lopB: {
-                        tenLop: "📖 Không có lớp 2",
-                        b3: "Trống",
-                        b4: "Trống"
-                    }
+                    classes: [
+                        {
+                            className: incomingClassName,
+                            schedules: [incomingSchedule]
+                        }
+                    ]
                 });
             }
         }
@@ -545,7 +519,6 @@
 
         renderAllLists();
 
-        // Cập nhật dòng trạng thái để hiển thị rõ ràng cho bạn biết dữ liệu cũ đã được khôi phục thành công
         if (storedChinh || storedNhom || storedGiang) {
             document.getElementById("fileStatus").style.color = "#2ecc71";
             document.getElementById("fileStatus").innerText = "✅ Đã tự động khôi phục dữ liệu từ bộ nhớ trình duyệt.";
